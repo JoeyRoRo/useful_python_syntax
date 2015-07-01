@@ -1,0 +1,110 @@
+#! /usr/bin/env python
+
+# try statement for if OS has a command availible
+import subprocess, sys
+try:
+	subprocess.call('sudo openvpn --config /etc/openvpn/vpn-in111_ovpn196_account.ovpn', shell=True)
+
+# if the command is not availible to the OS, print the below statement	
+except OSError as e:
+	if e.errno == os.errno.ENOENT:
+		raw_input('Your operating system does not have that command availible') 
+
+raw_input( "Press enter to exit.")
+
+-------------------------------------------------------------------
+# threads...
+import thread
+def my_thread(var_passed):
+	print(var_passed)
+
+try:
+	thread.start_new_thread( my_thread, ("Pass this variable", var1, ) )
+except: 
+	print('Error: unable to start thread')
+
+------------------------------------------------------------------
+# Checks to see if the OS is windows or not and setup for clearing the screen
+system = platform.platform(aliased=0, terse=1)
+import platform, subprocess
+
+system = platform.platform(aliased=0, terse=1)
+if 'Windows' in system:
+	clear_screen = 'cls'
+	Windows = True
+else:
+	clear_screen = 'clear'
+	Windows = False
+
+subprocess.call(clear_screen, shell=True)
+
+-------------------------------------------------------------------
+# try statement to output to a error log file
+import traceback, time
+try:
+	# your commands here
+except Exception, e:
+	lines_in = []
+	with open('Error_log.txt', 'r') as input:
+		for line in input:
+			lines_in.append(line)
+	with open('Error_log.txt', 'w') as f:
+		for x in lines_in:
+			f.write(x)
+		now = time.strftime("%d%b%Y, %I:%M %p")
+		f.write('\nError on: '+now+'...')
+		f.write('\n'+traceback.format_exc())
+	print('Your adb backup did not work. Please check your settings.\n\n')
+	while True:
+		back = raw_input('Press "b" to return to the main menu.')
+		if 'b' in back:	return
+
+-------------------------------------------------------------------------
+# how to set an output file in the same directory as the imput file path, with todays date in the file name, and not be an existing file
+now = time.strftime("%d%b%Y")
+
+save_file = save_path(ans, Windows)+now+'file'
+save_file = new_file_name(save_file)
+save_file = save_file+'.csv'
+
+def save_path(ans, Windows):
+	if Windows: path_split = ans.split('\\')
+	else: path_split = ans.split('/')
+	path_len = len(path_split)
+	file_name = path_split[(path_len) - 1]
+	file_len = len(file_name)
+	save_path = ans[:-(int(file_len))]
+	return save_path
+
+# this definition returns a file name that does not already exist.
+def new_file_name(save_file):
+	i = 1
+	while True:
+		if os.path.isfile(save_file+'.csv'):
+			if i == 1: save_file = save_file+str(i); i += 1
+			else: save_file = save_file[:-1]+str(i)
+			i += 1
+		else: return save_file; break
+
+---------------------------------------------------------------------------
+# How to print a wait timer
+wait_timer('Processing your stuff..')
+
+def wait_timer(what):
+	sys.stdout.write(what)
+	timer = 4
+	while timer > 0:
+		sys.stdout.write('.')
+		sys.stdout.flush()
+		timer -=1
+		time.sleep(.25)
+
+------------------------------------------------------------------------------
+# how to take out quotes from users drag and drop into a program
+ans = raw_input('User drag and drop file here')
+if ans.startswith('\"'): ans = ans[1:]
+if ans.endswith('\"'): ans = ans[:-1]
+if ans.startswith("\'"): ans = ans[1:]
+if ans.endswith("\'"): ans = ans[:-1]
+
+-------------------------------------------------------------------------------
